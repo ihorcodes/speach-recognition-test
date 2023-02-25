@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Audio to Text Conversion</title>
+  </head>
+  <body>
+    <h1>Audio to Text Conversion</h1>
+    <button onclick="startListening()">Start Listening</button>
+    <button onclick="stopListening()">Stop Listening</button><br><br>
+    <textarea id="transcription" rows="10" cols="50"></textarea><br><br>
+    <script>
+      var recognition = new webkitSpeechRecognition();
+      var transcription = "";
+
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = "en-US";
+
+      recognition.onresult = function(event) {
+        var interimTranscription = "";
+        for (var i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            transcription += event.results[i][0].transcript;
+          } else {
+            interimTranscription += event.results[i][0].transcript;
+          }
+        }
+        document.getElementById("transcription").value = transcription + interimTranscription;
+      };
+
+      recognition.onerror = function(event) {
+        console.error(event.error);
+      };
+
+      function startListening() {
+        recognition.start();
+      }
+
+      function stopListening() {
+        recognition.stop();
+      }
+    </script>
+  </body>
+</html>
